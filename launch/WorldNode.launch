@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+  <node name="WorldNode" pkg="WorldNode"
+      type="WorldNode" args="
+          -configuration_directory $(find WorldNode)/config
+          -configuration_basename WorldConfig.lua"
+      output="screen">
+  </node>
+
+</launch>
