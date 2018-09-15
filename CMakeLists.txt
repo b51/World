@@ -24,6 +24,7 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   GoogleDeps
+  Shm
 )
 
 list(APPEND CMAKE_PREFIX_PATH ${GoogleDeps_SOURCE_PREFIX}/share/cartographer)

@@ -21,6 +21,7 @@
 #include "cartographer/transform/rigid_transform.h"
 
 #include "WorldUtils.h"
+#include "shm_util.h"
 
 namespace IKid
 {
@@ -120,11 +121,13 @@ public:
   void UpdateResample();
   void AddParticleToCluster(std::vector<SampleConstPtr>& samples, const int* key);
 
+  Rigid2d GetCurrentPose() { return current_pose_; }
+
 private:
   void ParticleCluster();
+  void UpdateShm();
 
 public:
-  Rigid2d current_pose_;
 
 private:
   ParticleFilterOptions options_;
@@ -132,6 +135,7 @@ private:
   Samples samples_;
   std::vector<std::vector<SampleConstPtr> > clusters_;
 
+  Rigid2d current_pose_;
   // weight_slow, weight_fast, (Prob Robot p258)
   double weight_slow_;
   double weight_fast_;

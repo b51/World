@@ -44,6 +44,7 @@ void ParticleFilter::InitWithKnownPose(const Rigid2d& init_pose)
 
     samples_.emplace_back(std::make_shared<Sample>(noise * init_pose, 1./options_.particles_num));
   }
+  current_pose_ = init_pose;
 }
 
 void ParticleFilter::UpdateAction(const Rigid2d& action)
@@ -74,38 +75,39 @@ void ParticleFilter::UpdateObservation()
   double alpha_slow = 0.001;
   double alpha_fast = 0.1;
 
+  double v[3] = {current_pose_.translation().x()
+               , current_pose_.translation().y()
+               , current_pose_.rotation().angle()};
+
+  ceres::Problem problem;
+  ceres::Solver::Options options;
+  options.num_threads = 1;
+  ceres::Solver::Summary summary;
+
+  for (int i = 0; i < 3; i++)
+  {
+    Eigen::Vector2d observe_pose(4.3, 0);
+    Eigen::Vector2d real_pose(4.5, 1.5);
+
+    problem.AddResidualBlock(
+        LandmarkObservationCostFunction::CreateAutoDiffCostFunction(
+            0.1, observe_pose, real_pose)
+        , nullptr, v);
+  }
+
+  ceres::Solve(options, &problem, &summary);
+
+  Rigid2d hypothesis_pose({v[0], v[1]}, v[2]);
+
   for (auto& sample: samples_)
   {
     // TODO: Add known landmarks and unknown landmarks residual block
     //       should use ceres for all samples or only the best location?
     LOG(WARNING) << sample->pose;
-    
+
     // For known landmarks, i for landmarks num
     // scaling_factor for known and unknown landmarks weight
-    double v[3] = {sample->pose.translation().x(), sample->pose.translation().y(),
-                   sample->pose.rotation().angle()};
-
-    ceres::Problem problem;
-    ceres::Solver::Options options;
-    options.num_threads = 1;
-    ceres::Solver::Summary summary;
-
-    for (int i = 0; i < 3; i++)
-    {
-      Eigen::Vector2d observe_pose(4.3, 0);
-      Eigen::Vector2d real_pose(4.5, 1.5);
-
-      problem.AddResidualBlock(
-          LandmarkObservationCostFunction::CreateAutoDiffCostFunction(
-              0.1, observe_pose, real_pose)
-          , nullptr, v);
-    }
-
-    ceres::Solve(options, &problem, &summary);
-
-    Rigid2d new_pose({v[0], v[1]}, v[2]);
-
-    Rigid2d dist = sample->pose.inverse() * new_pose;
+    Rigid2d dist = sample->pose.inverse() * hypothesis_pose;
 
     double error = translation_weight * exp(-dist.translation().squaredNorm() / (rsigma * rsigma))
         + rotation_weight * exp(-(dist.rotation().angle() * dist.rotation().angle()) / (asigma * asigma));
@@ -238,7 +240,9 @@ void ParticleFilter::ParticleCluster()
       current_pose_ = mean_pose;
     }
   }
-  LOG(INFO) << "current_pose_: " << current_pose_ << " max_weight: " << max_weight;
+  LOG(INFO) << "current_pose_: " << current_pose_ << " max_weight: " << max_weight
+            << " max_weight_index: " << max_weight_index;
+  UpdateShm();
 }
 
 void ParticleFilter::AddParticleToCluster(std::vector<SampleConstPtr>& cluster, const int* key)
@@ -274,6 +278,18 @@ void ParticleFilter::AddParticleToCluster(std::vector<SampleConstPtr>& cluster, 
       }
     }
   }
+}
+
+void ParticleFilter::UpdateShm()
+{
+  double v[3] = {current_pose_.translation().x()
+               , current_pose_.translation().y()
+               , current_pose_.rotation().angle()};
+
+  double* pr = world_shm_set_ptr("position", world_keys["position"].size);
+
+  for (int i = 0; i < world_keys["position"].size; i++)
+    *(pr+i) = v[i];
 }
 
 } // namespace World
