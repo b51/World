@@ -31,20 +31,18 @@ void Modeling::Init()
   ParticleFilter pf(options_.particle_filter_options);
   Rigid2d init_pose({0., 0.}, 0.);
 
-  double* pr = world_shm_get_ptr("position");
-  for (int i = 0; i < 3; i++)
-    LOG(INFO) << "get position before " << i << " : " << *(pr+i);
-
   pf.InitWithKnownPose(init_pose);
 
   Rigid2d movement({0.5, 0.5}, 0.5);
   pf.UpdateAction(movement);
   pf.UpdateObservation();
 
-  pr = world_shm_get_ptr("position");
-  for (int i = 0; i < world_keys["position"].size; i++)
-    LOG(INFO) << "get position after " << i << " : " << *(pr+i);
+  double* pr = world_shm_get_ptr(pose_key);
+
+  //TODO need remove
+  for (int i = 0; i < world_keys[pose_key].size; i++)
+    LOG(INFO) << "get position " << i << " : " << *(pr+i);
 }
 
-}
-}
+} // namespace World
+} // namespace IKid

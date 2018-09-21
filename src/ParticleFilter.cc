@@ -286,9 +286,9 @@ void ParticleFilter::UpdateShm()
                , current_pose_.translation().y()
                , current_pose_.rotation().angle()};
 
-  double* pr = world_shm_set_ptr("position", world_keys["position"].size);
+  double* pr = world_shm_set_ptr(pose_key, world_keys[pose_key].size);
 
-  for (int i = 0; i < world_keys["position"].size; i++)
+  for (int i = 0; i < world_keys[pose_key].size; i++)
     *(pr+i) = v[i];
 }
 
