@@ -46,6 +46,13 @@ inline ParticleFilterOptions CreateParticleFilterOptions(
   return options;
 }
 
+/**
+ *  This function used for minimize resudual of landmark observation pose and true pose.
+ *
+ *  @param[in] scaling_factor each landmark has its own weight, eg. goal post weights higher.
+ *  @param[in] observe_pose landmark pose in robot frame.
+ *  @param[in] landmark_pose landmark true pose in world frame.
+ */
 class LandmarkObservationCostFunction
 {
 public:
@@ -105,7 +112,6 @@ struct Sample
 
 typedef std::shared_ptr<Sample> SamplePtr;
 typedef std::shared_ptr<const Sample> SampleConstPtr;
-
 typedef std::vector<SamplePtr> Samples;
 
 class ParticleFilter
@@ -115,16 +121,49 @@ public:
   ~ParticleFilter();
 
   void Init();
+
+  /**
+   *  Will generate samples with gaussian noise
+   *
+   *  @param[in] init_pose
+   */
   void InitWithKnownPose(const Rigid2d& init_pose);
+
+  /**
+   *  Update samples pose with movement
+   *
+   *  @param[in] action movement of robot
+   */
   void UpdateAction(const Rigid2d& action);
+
+  /**
+   *  Update samples weight with observations
+   *
+   *  TODO @param[in] observations from vision node, with pose
+   */
   void UpdateObservation();
+
+  /**
+   *  Resample samples when weights change, come from Probabilistic Robotics(pg.258)
+   */
   void UpdateResample();
-  void AddParticleToCluster(std::vector<SampleConstPtr>& samples, const int* key);
 
   Rigid2d GetCurrentPose() { return current_pose_; }
 
 private:
+  /**
+   *  Cluster samples to grids and get max weight cluster
+   */
   void ParticleCluster();
+
+  /**
+   *  Loop cluster samples
+   */
+  void AddParticleToCluster(std::vector<SampleConstPtr>& samples, const int* key);
+
+  /**
+   *  Set current pose to shm
+   */
   void UpdateShm();
 
 public:
@@ -136,7 +175,6 @@ private:
   std::vector<std::vector<SampleConstPtr> > clusters_;
 
   Rigid2d current_pose_;
-  // weight_slow, weight_fast, (Prob Robot p258)
   double weight_slow_;
   double weight_fast_;
 };
