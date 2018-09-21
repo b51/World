@@ -37,9 +37,8 @@ void Modeling::Init()
   pf.UpdateAction(movement);
   pf.UpdateObservation();
 
-  double* pr = world_shm_get_ptr(pose_key);
-
   //TODO need remove
+  double* pr = world_shm_get_ptr(pose_key);
   for (int i = 0; i < world_keys[pose_key].size; i++)
     LOG(INFO) << "get position " << i << " : " << *(pr+i);
 }
