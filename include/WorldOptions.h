@@ -21,13 +21,42 @@
 #include "cartographer/common/make_unique.h"
 #include "cartographer/common/port.h"
 
-#include "Modeling.h"
-
 namespace IKid
 {
 namespace World
 {
 namespace carto = cartographer;
+
+struct ParticleFilterOptions
+{
+  int particles_num;
+  double gaussian_noise_mean;
+  double gaussian_noise_var;
+};
+
+inline ParticleFilterOptions CreateParticleFilterOptions(
+    cartographer::common::LuaParameterDictionary* const lua_parameter_dictionary)
+{
+  ParticleFilterOptions options;
+  options.particles_num = lua_parameter_dictionary->GetInt("particles_num");
+  options.gaussian_noise_mean = lua_parameter_dictionary->GetDouble("gaussian_noise_mean");
+  options.gaussian_noise_var = lua_parameter_dictionary->GetDouble("gaussian_noise_var");
+  return options;
+}
+
+struct ModelingOptions
+{
+  ParticleFilterOptions particle_filter_options;
+};
+
+inline ModelingOptions CreateModelingOptions(
+    cartographer::common::LuaParameterDictionary* const lua_parameter_dictionary)
+{
+  ModelingOptions options;
+  options.particle_filter_options =
+      CreateParticleFilterOptions(lua_parameter_dictionary->GetDictionary("particle_filter").get());
+  return options;
+}
 
 struct WorldOptions
 {

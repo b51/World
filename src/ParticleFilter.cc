@@ -20,6 +20,9 @@ using Rigid2d = cartographer::transform::Rigid2d;
 ParticleFilter::ParticleFilter(const ParticleFilterOptions& options)
     : options_(options)
 {
+  LOG(INFO) << "particles_num               : " << options.particles_num;
+  LOG(INFO) << "gaussian_noise_mean         : " << options.gaussian_noise_mean;
+  LOG(INFO) << "gaussian_noise_var          : " << options.gaussian_noise_var;
   samples_.reserve(options_.particles_num);
 }
 

@@ -18,6 +18,7 @@
 #include "cartographer/common/lua_parameter_dictionary.h"
 #include "cartographer/transform/rigid_transform.h"
 
+#include "WorldOptions.h"
 #include "ParticleFilter.h"
 
 namespace IKid
@@ -25,21 +26,6 @@ namespace IKid
 namespace World
 {
 using Rigid2d = cartographer::transform::Rigid2d;
-
-struct ModelingOptions
-{
-  double ball_diameter;
-  ParticleFilterOptions particle_filter_options;
-};
-
-inline ModelingOptions CreateModelingOptions(
-    cartographer::common::LuaParameterDictionary* const lua_parameter_dictionary)
-{
-  ModelingOptions options;
-  options.particle_filter_options =
-      CreateParticleFilterOptions(lua_parameter_dictionary->GetDictionary("particle_filter").get());
-  return options;
-}
 
 class Modeling
 {

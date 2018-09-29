@@ -20,6 +20,7 @@
 #include "cartographer/common/lua_parameter_dictionary.h"
 #include "cartographer/transform/rigid_transform.h"
 
+#include "WorldOptions.h"
 #include "WorldUtils.h"
 #include "shm_util.h"
 
@@ -28,23 +29,6 @@ namespace IKid
 namespace World
 {
 using Rigid2d = cartographer::transform::Rigid2d;
-
-struct ParticleFilterOptions
-{
-  int particles_num;
-  double gaussian_noise_mean;
-  double gaussian_noise_var;
-};
-
-inline ParticleFilterOptions CreateParticleFilterOptions(
-    cartographer::common::LuaParameterDictionary* const lua_parameter_dictionary)
-{
-  ParticleFilterOptions options;
-  options.particles_num = lua_parameter_dictionary->GetInt("particles_num");
-  options.gaussian_noise_mean = lua_parameter_dictionary->GetDouble("gaussian_noise_mean");
-  options.gaussian_noise_var = lua_parameter_dictionary->GetDouble("gaussian_noise_var");
-  return options;
-}
 
 /**
  *  This function used for minimize resudual of landmark observation pose and true pose.
