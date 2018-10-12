@@ -23,6 +23,7 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  Utils
   GoogleDeps
   Shm
 )
@@ -83,7 +84,6 @@ include_directories(
 add_executable(${PROJECT_NAME}
   src/${PROJECT_NAME}Main.cc
   src/${PROJECT_NAME}.cc
-  src/Modeling.cc
   src/ParticleFilter.cc
   src/WorldUtils.cc
 )

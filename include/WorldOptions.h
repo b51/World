@@ -44,25 +44,11 @@ inline ParticleFilterOptions CreateParticleFilterOptions(
   return options;
 }
 
-struct ModelingOptions
-{
-  ParticleFilterOptions particle_filter_options;
-};
-
-inline ModelingOptions CreateModelingOptions(
-    cartographer::common::LuaParameterDictionary* const lua_parameter_dictionary)
-{
-  ModelingOptions options;
-  options.particle_filter_options =
-      CreateParticleFilterOptions(lua_parameter_dictionary->GetDictionary("particle_filter").get());
-  return options;
-}
-
 struct WorldOptions
 {
   int log_level;
 
-  ModelingOptions modeling_options;
+  ParticleFilterOptions particle_filter_options;
 };
 
 inline WorldOptions CreateWorldOptions(carto::common::LuaParameterDictionary* const
@@ -70,7 +56,8 @@ inline WorldOptions CreateWorldOptions(carto::common::LuaParameterDictionary* co
 {
   WorldOptions options;
   options.log_level = lua_parameter_dictionary->GetInt("log_level");
-  options.modeling_options = CreateModelingOptions(lua_parameter_dictionary->GetDictionary("modeling").get());
+  options.particle_filter_options =
+      CreateParticleFilterOptions(lua_parameter_dictionary->GetDictionary("particle_filter").get());
   return options;
 }
 

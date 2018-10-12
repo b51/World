@@ -30,6 +30,7 @@
   <!-- Dependencies can be catkin packages or system dependencies -->
   <build_depend>roscpp</build_depend>
   <build_depend>GoogleDeps</build_depend>
+  <build_depend>Utils</build_depend>
   <build_depend>Shm</build_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>Shm</exec_depend>

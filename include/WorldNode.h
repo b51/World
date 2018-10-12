@@ -18,9 +18,11 @@
 
 #include <ros/ros.h>
 
+#include "Utils.h"
+
 #include "WorldOptions.h"
 #include "LandmarkData.h"
-#include "Modeling.h"
+#include "ParticleFilter.h"
 
 namespace IKid
 {
@@ -33,12 +35,20 @@ public:
   WorldNode(const WorldOptions& options);
   ~WorldNode();
   void Init();
+  void Run();
 
 public:
   ::ros::NodeHandle node_handle_;
 
 private:
   WorldOptions options_;
+
+  std::unique_ptr<ParticleFilter> particle_filter_;
+
+  Rigid2d current_pose_;
+  Eigen::Vector2d ball_;
+  Eigen::Vector2d goal_;
+  Eigen::Vector2d spot_;
 };
 
 } // namespace World

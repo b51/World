@@ -24,6 +24,9 @@ ParticleFilter::ParticleFilter(const ParticleFilterOptions& options)
   LOG(INFO) << "gaussian_noise_mean         : " << options.gaussian_noise_mean;
   LOG(INFO) << "gaussian_noise_var          : " << options.gaussian_noise_var;
   samples_.reserve(options_.particles_num);
+
+  weight_fast_ = 0.;
+  weight_slow_ = 0.;
 }
 
 ParticleFilter::~ParticleFilter()
@@ -65,6 +68,7 @@ void ParticleFilter::UpdateAction(const Rigid2d& action)
   }
 }
 
+//TODO Add real observations information
 //void ParticleFilter::UpdateObservation(Observations observations)
 void ParticleFilter::UpdateObservation()
 {
@@ -77,6 +81,7 @@ void ParticleFilter::UpdateObservation()
 
   double alpha_slow = 0.001;
   double alpha_fast = 0.1;
+  ////////////////////////////////////////////////
 
   double v[3] = {current_pose_.translation().x()
                , current_pose_.translation().y()
@@ -89,6 +94,7 @@ void ParticleFilter::UpdateObservation()
 
   for (int i = 0; i < 3; i++)
   {
+    //TODO set real observation here, here observe_pose in local frame, real_pose in world frame;
     Eigen::Vector2d observe_pose(4.3, 0);
     Eigen::Vector2d real_pose(4.5, 1.5);
 
@@ -106,7 +112,7 @@ void ParticleFilter::UpdateObservation()
   {
     // TODO: Add known landmarks and unknown landmarks residual block
     //       should use ceres for all samples or only the best location?
-    LOG(WARNING) << sample->pose;
+    LOG(WARNING) << sample->pose << " " << sample->weight;
 
     // For known landmarks, i for landmarks num
     // scaling_factor for known and unknown landmarks weight
@@ -145,9 +151,11 @@ void ParticleFilter::UpdateObservation()
 
 void ParticleFilter::UpdateResample()
 {
+  //TODO: Parameters for test, need add to config.lua
   double x_length = 4.5;
   double y_length = 3.0;
   double orientation_range = M_PI;
+  ///////////////////////////////////////////////////////
 
   double thresthold = std::max(0., 1. - weight_fast_ / weight_slow_);
 

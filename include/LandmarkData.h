@@ -29,10 +29,16 @@ namespace World
 using Pose2d = Eigen::Matrix<double, 2, 1>;
 namespace carto = cartographer;
 
-const Pose2d kGoalPostOpponentLeft(4.5, -0.75);
+const Pose2d kGoalPostOpponentLeft(4.5, 0.75);
 const Pose2d kGoalPostOpponentRight(4.5, -0.75);
 const Pose2d kGoalPostKeepLeft(-4.5, -0.75);
 const Pose2d kGoalPostKeepRight(-4.5, 0.75);
+
+struct LabeldPoint
+{
+  int label;
+  Eigen::Vector2d point;
+};
 
 } // namespace World
 } // namespace IKid

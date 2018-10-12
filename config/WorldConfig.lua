@@ -16,15 +16,10 @@ PARTICLE_FILTER =
   gaussian_noise_var = 0.01,
 }
 
-MODELING =
-{
-  particle_filter = PARTICLE_FILTER,
-}
-
 world_options =
 {
   log_level = 0,
-  modeling = MODELING,
+  particle_filter = PARTICLE_FILTER,
 }
 
 return world_options;

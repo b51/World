@@ -46,6 +46,7 @@ int main(int argc, char* argv[])
   WorldNode world_node(options);
 
   world_node.Init();
+  world_node.Run();
 
   ::ros::spin();
   ::ros::shutdown();
