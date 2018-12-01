@@ -18,8 +18,6 @@
 
 #include <ros/ros.h>
 
-#include "Utils.h"
-
 #include "WorldOptions.h"
 #include "LandmarkData.h"
 #include "ParticleFilter.h"

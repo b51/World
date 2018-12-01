@@ -23,7 +23,6 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  Utils
   GoogleDeps
   Shm
 )

@@ -64,7 +64,7 @@ void WorldNode::Run()
 {
   while (node_handle_.ok())
   {
-    double current_time = GetTime();
+    //double current_time = GetTime();
     bool ball_detected = false;
     // First, get all landmark information to update particles
 
@@ -90,6 +90,7 @@ void WorldNode::Run()
     }
 
     // Second, get current pose to calculate ball position in global frame
+    /*
     Rigid2d cur_pose = particle_filter_->GetCurrentPose();
     if (ball_detected)
     {
@@ -101,6 +102,7 @@ void WorldNode::Run()
       *(wcm_pr+2) = ball_.y();
       *(wcm_pr+3) = position.z();
     }
+    */
   }
 }
 
